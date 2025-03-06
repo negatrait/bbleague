@@ -1,0 +1,97 @@
+{
+  "rosters": [
+    {
+      "name": "Human",
+      "reroll_cost": 50000,
+      "apothecary": true,
+      "special_rules": "Old World Classic",
+      "positions": [
+        {
+          "position": "Lineman",
+          "ma": 6, "st": 3, "ag": 3, "pa": 4, "av": 8,
+          "skills": [],
+          "cost": 50000,
+          "max_count": 16
+        },
+        {
+          "position": "Catcher",
+          "ma": 8, "st": 2, "ag": 3, "pa": 5, "av": 8,
+          "skills": ["Catch"],
+          "cost": 65000,
+          "max_count": 4
+        },
+        {
+          "position": "Thrower",
+          "ma": 6, "st": 3, "ag": 3, "pa": 3, "av": 9,
+          "skills": ["Pass", "Sure Hands"],
+          "cost": 85000,
+          "max_count": 2
+        },
+        {
+          "position": "Blitzer",
+          "ma": 7, "st": 3, "ag": 3, "pa": 4, "av": 9,
+          "skills": ["Block"],
+          "cost": 85000,
+          "max_count": 4
+        },
+        {
+          "position": "Ogre",
+          "ma": 5, "st": 5, "ag": 4, "pa": 5, "av": 10,
+          "skills": ["Bone Head", "Loner (4+)", "Mighty Blow (+1)", "Thick Skull", "Throw Team-Mate"],
+          "cost": 140000,
+          "max_count": 1
+        }
+      ]
+    },
+    {
+      "name": "Orc",
+      "reroll_cost": 60000,
+      "apothecary": true,
+      "special_rules": "Badlands Brawl",
+      "positions": [
+        {
+          "position": "Lineman",
+          "ma": 5, "st": 3, "ag": 3, "pa": 4, "av": 10,
+          "skills": ["Animosity (Orc Linemen)"],
+          "cost": 50000,
+          "max_count": 16
+        },
+        {
+          "position": "Goblin",
+          "ma": 6, "st": 2, "ag": 3, "pa": 4, "av": 8,
+          "skills": ["Dodge", "Right Stuff", "Stunty"],
+          "cost": 40000,
+          "max_count": 4
+        },
+        {
+          "position": "Thrower",
+          "ma": 5, "st": 3, "ag": 3, "pa": 3, "av": 9,
+          "skills": ["Animosity (all team-mates)", "Pass", "Sure Hands"],
+          "cost": 65000,
+          "max_count": 2
+        },
+        {
+          "position": "Big Un Blockers",
+          "ma": 4, "st": 4, "ag": 4, "pa": 5, "av": 10,
+          "skills": ["Animosity (Big Un Blockers)"],
+          "cost": 90000,
+          "max_count": 4
+        },
+        {
+          "position": "Blitzer",
+          "ma": 6, "st": 3, "ag": 3, "pa": 4, "av": 10,
+          "skills": ["Animosity (all team-mates)", "Block"],
+          "cost": 80000,
+          "max_count": 4
+        },
+        {
+          "position": "Troll",
+          "ma": 4, "st": 5, "ag": 5, "pa": 5, "av": 10,
+          "skills": ["Always Hungry", "Loner (4+)", "Mighty Blow (+1)", "Really Stupid", "Regeneration", "Throw Team-Mate"],
+          "cost": 115000,
+          "max_count": 1
+        }
+      ]
+    }
+  ]
+}
