@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<div class="has-text-centered">
+    <h1 class="title">500</h1>
+    <h2 class="subtitle">Server Error</h2>
+    <p>Something went wrong on our end. Please try again later.</p>
+    <a href="{{ url_for('home') }}" class="button is-primary mt-4">Go to Home Page</a>
+</div>
+{% endblock %}
