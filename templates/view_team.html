@@ -2,5 +2,11 @@
 {% block title %}View Team{% endblock %}
 {% block content %}
 <h1 class="title">{{ team.name }}</h1>
-<!-- Add code to display team details -->
+<div class="box">
+    <h2 class="subtitle">Team Details</h2>
+    <p><strong>Race:</strong> {{ team.race }}</p>
+    <p><strong>Team ID:</strong> {{ team.id }}</p>
+</div>
+
+<a class="button is-light" href="{{ url_for('home') }}">Back to Home</a>
 {% endblock %}

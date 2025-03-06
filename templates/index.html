@@ -1,7 +1,39 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<h1 class="title">Simple league manager</h1>
-<p>WIP</p>
-<a class="button is-primary" href="{{ url_for('create_team') }}">Create New Team</a>
+<h1 class="title">Simple League Manager</h1>
+
+<div class="buttons">
+    <a class="button is-primary" href="{{ url_for('create_team') }}">Create New Team</a>
+</div>
+
+{% if teams %}
+<div class="box">
+    <h2 class="subtitle">Teams</h2>
+    <table class="table is-fullwidth">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Race</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams %}
+            <tr>
+                <td>{{ team.id }}</td>
+                <td>{{ team.name }}</td>
+                <td>{{ team.race }}</td>
+                <td>
+                    <a href="{{ url_for('view_team', team_id=team.id) }}" class="button is-small is-info">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>No teams found. Create your first team!</p>
+{% endif %}
 {% endblock %}

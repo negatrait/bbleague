@@ -17,7 +17,13 @@ def get_db_connection():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT id, name, race FROM teams')
+    teams = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('index.html', teams=teams)
 
 @app.route('/create_team', methods=['GET', 'POST'])
 def create_team():
@@ -47,6 +53,30 @@ def view_team(team_id):
     cursor.close()
     conn.close()
     return render_template('view_team.html', team=team)
+
+@app.cli.command('init-db')
+def init_db_command():
+    """Initialize the database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Drop tables if they exist
+    cursor.execute('DROP TABLE IF EXISTS teams')
+    
+    # Create tables
+    cursor.execute('''
+        CREATE TABLE teams (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            race VARCHAR(50) NOT NULL,
+            created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    conn.commit()
+    cursor.close()
+    conn.close()
+    print('Database initialized.')
 
 if __name__ == '__main__':
     app.run(debug=True)
