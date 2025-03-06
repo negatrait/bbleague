@@ -1,12 +1,84 @@
 {% extends "base.html" %}
-{% block title %}View Team{% endblock %}
+{% block title %}{{ team.name }} - Team Details{% endblock %}
 {% block content %}
 <h1 class="title">{{ team.name }}</h1>
+
 <div class="box">
     <h2 class="subtitle">Team Details</h2>
-    <p><strong>Race:</strong> {{ team.race }}</p>
-    <p><strong>Team ID:</strong> {{ team.id }}</p>
+    <div class="columns">
+        <div class="column">
+            <p><strong>Race:</strong> {{ team.race }}</p>
+            <p><strong>Team ID:</strong> {{ team.id }}</p>
+            <p><strong>Created:</strong> {{ team.created.strftime('%Y-%m-%d') }}</p>
+        </div>
+        <div class="column">
+            <p><strong>Re-roll Cost:</strong> {{ team.reroll_cost }} gold</p>
+            <p><strong>Apothecary Access:</strong> {% if team.apothecary %}Yes{% else %}No{% endif %}</p>
+            <p><strong>Team Value:</strong> {{ team_value }} gold</p>
+        </div>
+    </div>
 </div>
 
-<a class="button is-light" href="{{ url_for('home') }}">Back to Home</a>
+<div class="box">
+    <div class="level">
+        <div class="level-left">
+            <div class="level-item">
+                <h2 class="subtitle">Team Roster</h2>
+            </div>
+        </div>
+        <div class="level-right">
+            <div class="level-item">
+                <a href="{{ url_for('add_player', team_id=team.id) }}" class="button is-primary">
+                    Add Player
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if players %}
+    <table class="table is-fullwidth is-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>MA</th>
+                <th>ST</th>
+                <th>AG</th>
+                <th>PA</th>
+                <th>AV</th>
+                <th>Skills</th>
+                <th>Cost</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ player.name or "Unnamed" }}</td>
+                <td>{{ player.position }}</td>
+                <td>{{ player.ma }}</td>
+                <td>{{ player.st }}</td>
+                <td>{{ player.ag }}</td>
+                <td>{{ player.pa }}</td>
+                <td>{{ player.av }}</td>
+                <td class="has-text-weight-light is-size-7">{{ player.skills or "None" }}</td>
+                <td>{{ player.cost }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('delete_player', player_id=player.id) }}"
+                          onsubmit="return confirm('Are you sure you want to remove this player?');">
+                        <button type="submit" class="button is-small is-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="has-text-centered">No players on this team yet. Add your first player!</p>
+    {% endif %}
+</div>
+
+<div class="buttons">
+    <a class="button is-light" href="{{ url_for('home') }}">Back to Home</a>
+</div>
 {% endblock %}
