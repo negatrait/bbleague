@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Add Player to {{ team.name }}{% endblock %}
+{% block content %}
+<h1 class="title">Add Player to {{ team.name }}</h1>
+
+<form method="POST">
+    <div class="field">
+        <label class="label" for="player_name">Player Name:</label>
+        <div class="control">
+            <input class="input" type="text" id="player_name" name="player_name" placeholder="Optional" >
+        </div>
+        <p class="help">Leave blank for auto-generated name</p>
+    </div>
+
+    <div class="field">
+        <label class="label" for="position">Position:</label>
+        <div class="control">
+            <div class="select">
+                <select id="position" name="position" required>
+                    <option value="">Select Position</option>
+                    {% for position in positions %}
+                        <option value="{{ position.position }}">{{ position.position }} (MA:{{ position.ma }} ST:{{ position.st }} AG:{{ position.ag }} PA:{{ position.pa }} AV:{{ position.av }} - {{ position.cost }} gold)</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="control">
+            <button class="button is-primary" type="submit">Add Player</button>
+        </div>
+    </div>
+</form>
+
+<div class="content">
+    <h3>Position Details</h3>
+    <div class="notification is-info is-light">
+        Select a position above to see its details here.
+    </div>
+    
+    {% for position in positions %}
+    <div id="details-{{ position.position|replace(' ', '-')|lower }}" class="position-details" style="display: none;">
+        <div class="box">
+            <h4>{{ position.position }}</h4>
+            <table class="table is-narrow">
+                <tr>
+                    <th>Stats</th>
+                    <td>MA: {{ position.ma }}, ST: {{ position.st }}, AG: {{ position.ag }}, PA: {{ position.pa }}, AV: {{ position.av }}</td>
+                </tr>
+                <tr>
+                    <th>Skills</th>
+                    <td>{{ position.skills|join(', ') or "None" }}</td>
+                </tr>
+                <tr>
+                    <th>Cost</th>
+                    <td>{{ position.cost }} gold</td>
+                </tr>
+                <tr>
+                    <th>Maximum</th>
+                    <td>{{ position.max_count }} per team</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<a class="button is-light" href="{{ url_for('view_team', team_id=team.id) }}">Back to Team</a>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const positionSelect = document.getElementById('position');
+    const detailDivs = document.querySelectorAll('.position-details');
+    
+    positionSelect.addEventListener('change', function() {
+        // Hide all position details
+        detailDivs.forEach(div => div.style.display = 'none');
+        
+        // Show selected position details
+        const selectedPosition = positionSelect.value;
+        if (selectedPosition) {
+            const detailId = 'details-' + selectedPosition.toLowerCase().replace(/ /g, '-');
+            const detailDiv = document.getElementById(detailId);
+            if (detailDiv) {
+                detailDiv.style.display = 'block';
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
