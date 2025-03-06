@@ -22,13 +22,23 @@ def home():
 def create_team():
     if request.method == 'POST':
         team_name = request.form['team_name']
-        # Add code to save team to database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO teams (name) VALUES (%s)', (team_name,))
+        conn.commit()
+        cursor.close()
+        conn.close()
         return redirect(url_for('home'))
     return render_template('create_team.html')
 
 @app.route('/view_team/<int:team_id>')
 def view_team(team_id):
-    # Add code to retrieve team from database
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM teams WHERE id = %s', (team_id,))
+    team = cursor.fetchone()
+    cursor.close()
+    conn.close()
     return render_template('view_team.html', team=team)
 
 if __name__ == '__main__':
