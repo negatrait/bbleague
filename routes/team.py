@@ -14,7 +14,7 @@ def create_team():
     try:
         logger.debug("Received request to create a new team")
         try:
-        file_path = "~/bbleague/static/json/roster_template.json"
+        file_path = "static/json/roster_template.json"
         with open(file_path, 'r') as f:
             data = json.load(f)
             races = data['rosters']
