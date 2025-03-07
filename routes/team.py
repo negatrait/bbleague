@@ -12,7 +12,7 @@ def create_team():
     cursor = None
     try:
         logger.debug("Received request to create a new team")
-        with open('static/json/roster_template.json') as f:
+        with open('../static/json/roster_template.json') as f:
             data = json.load(f)
         races = data['rosters']
         logger.debug(f"Loaded roster template: {races}")
