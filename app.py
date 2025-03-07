@@ -32,6 +32,9 @@ def get_db_connection():
 
 @app.route('/')
 def home():
+    conn = None
+    cursor = None
+
     try:
         conn = get_db_connection()
         if conn is None:
@@ -41,13 +44,21 @@ def home():
         cursor = conn.cursor(dictionary=True)
         cursor.execute('SELECT id, name, race FROM teams')
         teams = cursor.fetchall()
-        cursor.close()
-        conn.close()
+        
         return render_template('index.html', teams=teams)
-    except Exception as e:
-        logger.error(f"Error in home route: {e}")
+    except mysql.connector.Error as e:
+        logger.error(f"Database error in home route: {e}")
         flash("An error occurred while loading teams.", "error")
         return render_template('index.html', teams=[])
+    except Exception as e:
+        logger.error(f"Unexpected error in home route: {e}")
+        flash("An unexpected error occurred. Please try again later.", "error")
+        return render_template('index.html', teams=[])
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 @app.route('/create_team', methods=['GET', 'POST'])
 def create_team():
@@ -129,9 +140,11 @@ def create_team():
         flash("An error occurred while loading the team creation page.", "error")
         return redirect(url_for('home'))
 
-
 @app.route('/view_team/<int:team_id>')
 def view_team(team_id):
+    conn = None
+    cursor = None
+
     try:
         conn = get_db_connection()
         if conn is None:
@@ -146,8 +159,6 @@ def view_team(team_id):
         
         if not team:
             flash(f"Team with ID {team_id} not found.", "error")
-            cursor.close()
-            conn.close()
             return redirect(url_for('home'))
         
         # Get team players
@@ -157,17 +168,27 @@ def view_team(team_id):
         # Calculate team value
         team_value = sum(player['cost'] for player in players)
         
-        cursor.close()
-        conn.close()
-        
         return render_template('view_team.html', team=team, players=players, team_value=team_value)
-    except Exception as e:
-        logger.error(f"Error in view_team route: {e}")
+    except mysql.connector.Error as e:
+        logger.error(f"Database error in view_team route: {e}")
         flash("An error occurred while loading the team details.", "error")
         return redirect(url_for('home'))
+    except Exception as e:
+        logger.error(f"Unexpected error in view_team route: {e}")
+        flash("An unexpected error occurred. Please try again later.", "error")
+        return redirect(url_for('home'))
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
 
 @app.route('/add_player/<int:team_id>', methods=['GET', 'POST'])
 def add_player(team_id):
+    conn = None
+    cursor = None
+
     try:
         conn = get_db_connection()
         if conn is None:
@@ -182,8 +203,6 @@ def add_player(team_id):
         
         if not team:
             flash(f"Team with ID {team_id} not found.", "error")
-            cursor.close()
-            conn.close()
             return redirect(url_for('home'))
         
         # Load roster template for the team's race
@@ -191,11 +210,7 @@ def add_player(team_id):
             roster_data = json.load(f)
             
         # Find the appropriate race roster
-        team_roster = None
-        for roster in roster_data['rosters']:
-            if roster['name'] == team['race']:
-                team_roster = roster
-                break
+        team_roster = next((roster for roster in roster_data['rosters'] if roster['name'] == team['race']), None)
                 
         if not team_roster:
             flash(f"Roster template for {team['race']} not found.", "error")
@@ -205,16 +220,10 @@ def add_player(team_id):
             position_name = request.form['position']
             
             # Find the position in the roster
-            selected_position = None
-            for pos in team_roster['positions']:
-                if pos['position'] == position_name:
-                    selected_position = pos
-                    break
+            selected_position = next((pos for pos in team_roster['positions'] if pos['position'] == position_name), None)
                     
             if not selected_position:
                 flash(f"Position {position_name} not found for {team['race']}.", "error")
-                cursor.close()
-                conn.close()
                 return redirect(url_for('view_team', team_id=team_id))
                 
             # Count current players of this position
@@ -224,8 +233,6 @@ def add_player(team_id):
             
             if current_count >= selected_position['max_count']:
                 flash(f"Maximum number of {position_name}s ({selected_position['max_count']}) reached.", "error")
-                cursor.close()
-                conn.close()
                 return redirect(url_for('view_team', team_id=team_id))
                 
             # Add the player
@@ -248,20 +255,28 @@ def add_player(team_id):
             
             conn.commit()
             flash(f"{position_name} {player_name} added to your team!", "success")
-            cursor.close()
-            conn.close()
             return redirect(url_for('view_team', team_id=team_id))
             
-        cursor.close()
-        conn.close()
         return render_template('add_player.html', team=team, positions=team_roster['positions'])
-    except Exception as e:
-        logger.error(f"Error in add_player route: {e}")
+    except mysql.connector.Error as e:
+        logger.error(f"Database error in add_player route: {e}")
         flash("An error occurred while adding a player.", "error")
         return redirect(url_for('view_team', team_id=team_id))
+    except Exception as e:
+        logger.error(f"Unexpected error in add_player route: {e}")
+        flash("An unexpected error occurred. Please try again later.", "error")
+        return redirect(url_for('view_team', team_id=team_id))
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 @app.route('/delete_player/<int:player_id>', methods=['POST'])
 def delete_player(player_id):
+    conn = None
+    cursor = None
+
     try:
         conn = get_db_connection()
         if conn is None:
@@ -276,8 +291,6 @@ def delete_player(player_id):
         
         if not player:
             flash(f"Player with ID {player_id} not found.", "error")
-            cursor.close()
-            conn.close()
             return redirect(url_for('home'))
             
         team_id = player['team_id']
@@ -287,21 +300,29 @@ def delete_player(player_id):
         conn.commit()
         
         flash("Player successfully removed from the team.", "success")
-        cursor.close()
-        conn.close()
         return redirect(url_for('view_team', team_id=team_id))
-    except Exception as e:
-        logger.error(f"Error in delete_player route: {e}")
+    except mysql.connector.Error as e:
+        logger.error(f"Database error in delete_player route: {e}")
         flash("An error occurred while deleting the player.", "error")
         return redirect(url_for('home'))
+    except Exception as e:
+        logger.error(f"Unexpected error in delete_player route: {e}")
+        flash("An unexpected error occurred. Please try again later.", "error")
+        return redirect(url_for('home'))
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 @app.cli.command('init-db')
+@with_appcontext
 def init_db_command():
     """Initialize the database with teams and players tables."""
     try:
         conn = get_db_connection()
         if conn is None:
-            print("Failed to connect to database.")
+            logger.error("Failed to connect to database.")
             return
             
         cursor = conn.cursor()
@@ -394,11 +415,12 @@ def init_db_command():
                 ))
                 
         conn.commit()
-        cursor.close()
-        conn.close()
-        print('Database initialized with sample data.')
+        logger.info('Database initialized with sample data.')
     except Exception as e:
-        print(f"Error initializing database: {e}")
+        logger.error(f"Error initializing database: {e}")
+    finally:
+        if conn:
+            conn.close()
 
 @app.errorhandler(404)
 def page_not_found(e):
