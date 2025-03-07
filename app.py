@@ -27,7 +27,6 @@ def get_db_connection():
         return conn
     except Error as e:
         logger.error(f"Database connection error: {e}")
-        print(f"Connection error: {e}")  # For debugging
         return None
 
 @app.route('/')
@@ -316,8 +315,7 @@ def delete_player(player_id):
             conn.close()
 
 @app.cli.command('init-db')
-@with_appcontext
-def init_db_command():
+def init_db():
     """Initialize the database with teams and players tables."""
     try:
         conn = get_db_connection()
@@ -421,6 +419,7 @@ def init_db_command():
     finally:
         if conn:
             conn.close()
+
 
 @app.errorhandler(404)
 def page_not_found(e):
