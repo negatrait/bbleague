@@ -29,7 +29,9 @@ def add_player(team_id):
         logger.debug(f"Team details: {team}")
         
         # Load roster template for the team's race
-        with open('static/json/roster_template.json') as f:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(current_dir, '..', 'static', 'json', 'roster_template.json')
+        with open(file_path) as f:
             roster_data = json.load(f)
         
         # Find the appropriate race roster
