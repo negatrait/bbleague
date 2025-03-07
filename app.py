@@ -4,31 +4,12 @@ import json
 from config import Config
 import logging
 from mysql.connector import Error
-import os
-import socket
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Detect if running on PythonAnywhere
-is_pythonanywhere = 'pythonanywhere' in socket.gethostname()
-
 # Setup logging
-if is_pythonanywhere:
-    # PythonAnywhere specific logging
-    log_dir = os.path.expanduser('~/logs')
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        filename=os.path.join(log_dir, 'flask_app.log'),
-        filemode='a'
-    )
-else:
-    # Local development logging
-    logging.basicConfig(level=logging.INFO)
-
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def get_db_connection():
@@ -405,3 +386,12 @@ def init_db_command():
         print(f"Error initializing database: {e}")
 
 @app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template('500.html'), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
