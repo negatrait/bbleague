@@ -51,6 +51,10 @@ def home():
 
 @app.route('/create_team', methods=['GET', 'POST'])
 def create_team():
+    conn = None
+    cursor = None
+    teams = []
+
     try:
         with open('static/json/roster_template.json') as f:
             data = json.load(f)
@@ -104,21 +108,27 @@ def create_team():
                     ))
                 
                 conn.commit()
-                cursor.close()
-                conn.close()
                 flash(f"Team '{team_name}' created successfully!", "success")
                 return redirect(url_for('view_team', team_id=team_id))
                 
-            except Error as e:
+            except mysql.connector.Error as e:
                 logger.error(f"Database error during team creation: {e}")
                 flash("An error occurred while creating the team.", "error")
-                return render_template('create_team.html', races=races)
+            except Exception as e:
+                logger.error(f"Error in create_team route: {e}")
+                flash("An unexpected error occurred. Please try again later.", "error")
+            finally:
+                if cursor:
+                    cursor.close()
+                if conn:
+                    conn.close()
         
         return render_template('create_team.html', races=races)
     except Exception as e:
         logger.error(f"Error in create_team route: {e}")
         flash("An error occurred while loading the team creation page.", "error")
         return redirect(url_for('home'))
+
 
 @app.route('/view_team/<int:team_id>')
 def view_team(team_id):
