@@ -52,9 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for player in players %}
-            <tr>
-                <td>{{ player.name or "Unnamed" }}</td>
+            {% for player in>{{ player.name or "Unnamed" }}</td>
                 <td>{{ player.position }}</td>
                 <td>{{ player.ma }}</td>
                 <td>{{ player.st }}</td>
