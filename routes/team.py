@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from db import get_db_connection
 import json
 import logging
@@ -14,13 +14,14 @@ def create_team():
     try:
         logger.debug("Received request to create a new team")
         try:
-        file_path = os.path.join(current_app.root_path, 'static', 'json', 'roster_template.json')
+        current_dir = os.getcwd()
+        file_path = os.path.join(current_dir, 'static', 'json', 'roster_template.json')
         with open(file_path, 'r') as f:
             data = json.load(f)
             races = data['rosters']
             logger.debug(f"Loaded roster template: {races}")
         except FileNotFoundError as e:
-        current_app.logger.error(f"Error in create_team route: {e}")
+        logger.error(f"Error in create_team route: {e}")
         logger.debug(f"Roster template not found")
         
         if request.method == 'POST':
