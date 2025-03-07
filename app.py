@@ -1,17 +1,21 @@
 from flask import Flask
 from config import Config
 import logging
+from logging.handlers import TimedRotatingFileHandler
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Setup logging
-logging.basicConfig(level=logging.DEBUG,
-                    handlers=[
-                        logging.FileHandler("bbleague.log"),
-                        logging.StreamHandler()
-                    ])
-logger = logging.getLogger(__name__)
+# Setup logging with log rotation
+log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+log_handler = TimedRotatingFileHandler('bbleague.log', when='midnight', interval=1, backupCount=30)
+log_handler.setFormatter(log_formatter)
+log_handler.setLevel(logging.DEBUG)
+
+app_logger = logging.getLogger(__name__)
+app_logger.setLevel(logging.DEBUG)
+app_logger.addHandler(log_handler)
+app_logger.addHandler(logging.StreamHandler())
 
 # Import and register blueprints
 from routes.home import home_bp
