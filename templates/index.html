@@ -4,7 +4,7 @@
 <h1 class="title">Simple League Manager</h1>
 
 <div class="buttons">
-    <a class="button is-primary" href="{{ url_for('create_team') }}">Create New Team</a>
+    <a class="button is-primary" href="{{ url_for('team.create_team') }}">Create New Team</a>
 </div>
 
 {% if teams %}
@@ -26,7 +26,7 @@
                 <td>{{ team.name }}</td>
                 <td>{{ team.race }}</td>
                 <td>
-                    <a href="{{ url_for('home.view_team', team_id=team.id) }}" class="button is-small is-info">View</a>
+                    <a href="{{ url_for('team.view_team', team_id=team.id) }}" class="button is-small is-info">View</a>
                 </td>
             </tr>
             {% endfor %}

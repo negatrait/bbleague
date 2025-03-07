@@ -28,7 +28,7 @@
         </div>
         <div class="level-right">
             <div class="level-item">
-                <a href="{{ url_for('add_player', team_id=team.id) }}" class="button is-primary">
+                <a href="{{ url_for('player.add_player', team_id=team.id) }}" class="button is-primary">
                     Add Player
                 </a>
             </div>
@@ -62,7 +62,7 @@
                 <td class="has-text-weight-light is-size-7">{{ player.skills or "None" }}</td>
                 <td>{{ player.cost }}</td>
                 <td>
-                    <form method="POST" action="{{ url_for('delete_player', player_id=player.id) }}"
+                    <form method="POST" action="{{ url_for('player.delete_player', player_id=player.id) }}"
                           onsubmit="return confirm('Are you sure you want to remove this player?');">
                         <button type="submit" class="button is-small is-danger">Remove</button>
                     </form>
