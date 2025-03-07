@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # Setup logging
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(level=logging.DEBUG,
                     handlers=[
                         logging.FileHandler("your_log_file.log"),
                         logging.StreamHandler()
