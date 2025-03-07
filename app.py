@@ -23,6 +23,7 @@ def get_db_connection():
         return conn
     except Error as e:
         logger.error(f"Database connection error: {e}")
+        print(f"Connection error: {e}")  # For debugging
         return None
 
 @app.route('/')
