@@ -26,7 +26,7 @@
                 <td>{{ team.name }}</td>
                 <td>{{ team.race }}</td>
                 <td>
-                    <a href="{{ url_for('view_team', team_id=team.id) }}" class="button is-small is-info">View</a>
+                    <a href="{{ url_for('home.view_team', team_id=team.id) }}" class="button is-small is-info">View</a>
                 </td>
             </tr>
             {% endfor %}
