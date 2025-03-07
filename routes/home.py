@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, flash
 from db import get_db_connection
 import logging
+import mysql.connector
 
 home_bp = Blueprint('home', __name__)
 logger = logging.getLogger(__name__)
@@ -20,9 +21,13 @@ def home():
         teams = cursor.fetchall()
         
         return render_template('index.html', teams=teams)
+    except mysql.connector.Error as db_err:
+        logger.error(f"Database error in home route: {db_err}")
+        flash("An error occurred while loading teams from the database.", "error")
+        return render_template('index.html', teams=[])
     except Exception as e:
-        logger.error(f"Error in home route: {e}")
-        flash("An error occurred while loading teams.", "error")
+        logger.error(f"Unexpected error in home route: {e}")
+        flash("An unexpected error occurred. Please try again later.", "error")
         return render_template('index.html', teams=[])
     finally:
         if cursor:
