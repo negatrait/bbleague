@@ -24,5 +24,9 @@ app.register_blueprint(team_bp)
 app.register_blueprint(player_bp)
 app.register_blueprint(error_bp)
 
+# Import and register commands
+from commands.init_db import init_db
+app.cli.command('init-db')(init_db)
+
 if __name__ == '__main__':
     app.run(debug=True)
