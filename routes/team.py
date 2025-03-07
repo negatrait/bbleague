@@ -14,14 +14,14 @@ def create_team():
     try:
         logger.debug("Received request to create a new team")
         try:
-        file_path = "static/json/roster_template.json"
-        with open(file_path, 'r') as f:
-            data = json.load(f)
+            file_path = "static/json/roster_template.json"
+            with open(file_path, 'r') as f:
+                data = json.load(f)
             races = data['rosters']
             logger.debug(f"Loaded roster template: {races}")
         except FileNotFoundError as e:
-        logger.error(f"Error in create_team route: {e}")
-        logger.debug(f"Roster template not found")
+            logger.error(f"Error in create_team route: {e}")
+            logger.debug(f"Roster template not found")
         
         if request.method == 'POST':
             team_name = request.form['team_name']
