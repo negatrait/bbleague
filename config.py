@@ -7,4 +7,4 @@ class Config:
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'negatrait.mysql.pythonanywhere-services.com'
     MYSQL_USER = os.environ.get('MYSQL_USER') or 'negatrait'
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'bbleaguepassword'
-    MYSQL_DB = os.environ.get('MYSQL_DB') or 'default'
+    MYSQL_DB = os.environ.get('MYSQL_DB') or 'negatrait$default'
